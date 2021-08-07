@@ -1,6 +1,6 @@
 // const fs = require('fs'); // put file system into variable
 const express = require('express'); // put express into variable
-const morgan = require('morgan');
+const morgan = require('morgan'); // HTTP request logger middleware for Node. js. It simplifies the process of logging requests to your application
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
