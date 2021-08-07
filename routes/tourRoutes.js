@@ -4,6 +4,8 @@ const tc = require('../controllers/tourController');
 const router = express.Router();
 // router.param('id', tc.checkID);
 
+router.route('/top-5-cheap').get(tc.aliasTopTours).get(tc.getAllTours);
+
 router.route('/').get(tc.getAllTours).post(tc.createTour);
 
 router.route('/:id').get(tc.getTour).patch(tc.updateTour).delete(tc.deleteTour);
