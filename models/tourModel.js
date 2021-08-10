@@ -55,6 +55,10 @@ const tourSchema = new mongoose.Schema(
       select: false,
     },
     startDates: [Date],
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
   }, // Schema definition, no name
   {
     // Object for the options (each time data is outputted at JSON and OBject it is there (true))
@@ -69,6 +73,7 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 // PRE Document middleware: runs before the .save() and .create() but not inserMany()
+// 'this' will point to the document not the query
 // in save() middleware <em>this<em> points to the currently processed (saved) document
 // pre save hook)
 tourSchema.pre('save', function (next) {
@@ -87,6 +92,29 @@ tourSchema.pre('save', function (next) {
 //   next();
 // });
 
+// QUERY Middleware ('find') << hook
+// .pre() activates before any other middleware
+
+// 'this' will point at query not document
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secretTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+// post() activates after hence post
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  // console.log(docs);
+  next();
+});
+
+// AGGREGATION middleware allows to add hooks before or after agg happens
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
+  next();
+});
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
