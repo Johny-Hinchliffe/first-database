@@ -176,7 +176,7 @@ exports.getMonthlyPlan = async (req, res) => {
         },
       },
       {
-        $sort: { numTourStarts: -1, month: 1 }, // sort -1 = assending, 1 = assending 
+        $sort: { numTourStarts: -1, month: 1 }, // sort -1 = assending, 1 = assending
       },
       // {
       //   $limit: 12, // limit how many will be visible
