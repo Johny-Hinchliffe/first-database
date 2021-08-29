@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable node/no-unsupported-features/es-syntax */
 const AppError = require('../utilities/appError');
 
@@ -17,7 +18,7 @@ const handleValidationErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
-  const message = `Duplicate field value:}`;
+  const message = `Duplicate field value: ${err.keyValue.name}`;
   return new AppError(message, 400);
 };
 const sendErrorDev = (err, res) => {
