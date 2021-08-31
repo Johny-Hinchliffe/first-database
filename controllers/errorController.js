@@ -2,6 +2,11 @@
 /* eslint-disable node/no-unsupported-features/es-syntax */
 const AppError = require('../utilities/appError');
 
+const handleJwtError = () =>
+  new AppError('Invalid token! Please log in again', 401);
+
+const handleExpiredToken = () =>
+  new AppError('Expired token! Please log in again', 401);
 const handleCastErrorDB = (err) => {
   const message = `Invalid ${err.path}: ${err.value}`;
   return new AppError(message, 400);
@@ -59,6 +64,8 @@ module.exports = (err, req, res, next) => {
     if (err.name === 'ValidationError')
       error = handleValidationErrorDB(error, res);
     if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (error.name === 'JsonWebTokenError') error = handleJwtError();
+    if (error.name === 'TokenExpiredError') error = handleExpiredToken();
 
     sendErrorProd(error, res);
   }

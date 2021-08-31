@@ -1,17 +1,27 @@
 const express = require('express');
-const tc = require('../controllers/tourController');
-
+const tourController = require('../controllers/tourController');
+const authController = require('../controllers/authController');
 const router = express.Router();
-// router.param('id', tc.checkID);
+// router.param('id', tourController.checkID);
 
-router.route('/tour-stats').get(tc.getTourStats);
-router.route('/monthly-plan/:year').get(tc.getMonthlyPlan);
+router.route('/tour-stats').get(tourController.getTourStats);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
 
-router.route('/top-5-cheap').get(tc.aliasTopTours).get(tc.getAllTours);
+router
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours)
+  .get(tourController.getAllTours);
 
-router.route('/').get(tc.getAllTours).post(tc.createTour);
+router
+  .route('/')
+  .get(authController.protect, tourController.getAllTours)
+  .post(tourController.createTour);
 
-router.route('/:id').get(tc.getTour).delete(tc.deleteTour).patch(tc.updateTour);
+router
+  .route('/:id')
+  .get(tourController.getTour)
+  .delete(tourController.deleteTour)
+  .patch(tourController.updateTour);
 
-router.route('/add-date/:id').patch(tc.addDate);
+router.route('/add-date/:id').patch(tourController.addDate);
 module.exports = router;
