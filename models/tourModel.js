@@ -1,6 +1,7 @@
 const mongoose = require('mongoose'); // extension on mongodb
 const slugify = require('slugify');
 const validator = require('validator');
+// const User = require('./userModel');
 // Schema is a blueprint where you can set the schema data type etc
 const tourSchema = new mongoose.Schema(
   {
@@ -102,6 +103,7 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   }, // Schema definition, no name
   {
     // Object for the options (each time data is outputted at JSON and OBject it is there (true))
@@ -124,6 +126,12 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
+
 // tourSchema.pre('save', (next) => {
 //   console.log('Will save document...');
 //   next();
@@ -145,10 +153,11 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-// post() activates after hence post
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  // console.log(docs);
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
   next();
 });
 
@@ -158,6 +167,14 @@ tourSchema.pre('aggregate', function (next) {
   console.log(this.pipeline());
   next();
 });
+
+// post() activates after hence post
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(`Query took ${Date.now() - this.start} milliseconds`);
+  // console.log(docs);
+  next();
+});
+
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;
