@@ -26,6 +26,7 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'guide', 'lead-guide', 'admin'],
     default: 'user',
   },
+  reviews: [{ type: mongoose.Schema.ObjectId, ref: 'Review' }],
   password: {
     type: String,
     required: [true, 'You must enter a password'],

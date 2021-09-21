@@ -104,6 +104,7 @@ const tourSchema = new mongoose.Schema(
       },
     ],
     guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
+    reviews: [{ type: mongoose.Schema.ObjectId, ref: 'Review' }],
   }, // Schema definition, no name
   {
     // Object for the options (each time data is outputted at JSON and OBject it is there (true))
