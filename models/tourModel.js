@@ -104,7 +104,6 @@ const tourSchema = new mongoose.Schema(
       },
     ],
     guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
-    reviews: [{ type: mongoose.Schema.ObjectId, ref: 'Review' }],
   }, // Schema definition, no name
   {
     // Object for the options (each time data is outputted at JSON and OBject it is there (true))
@@ -118,6 +117,13 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+// virtual populate
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
 // PRE Document middleware: runs before the .save() and .create() but not inserMany()
 // 'this' will point to the document not the query
 // in save() middleware <em>this<em> points to the currently processed (saved) document

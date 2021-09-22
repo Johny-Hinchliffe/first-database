@@ -22,7 +22,7 @@ const reviewSchema = new mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.ObjectId,
-      ref: 'Tour',
+      ref: 'User',
       required: [true, 'Review must belong to a user'],
     },
   },
@@ -33,10 +33,14 @@ const reviewSchema = new mongoose.Schema(
 );
 
 reviewSchema.pre(/^find/, function (next) {
+  //   this.populate({
+  //     path: 'tour',
+  //     select: 'name',
+  //   }).populate({
+  //     path: 'user',
+  //     select: 'name photo',
+  //   });
   this.populate({
-    path: 'tour',
-    select: 'name',
-  }).populate({
     path: 'user',
     select: 'name photo',
   });
@@ -46,3 +50,8 @@ reviewSchema.pre(/^find/, function (next) {
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;
+
+//POST /tour/5c88fa8cf4afda39709c2970/reviews
+//GET /tour/5c88fa8cf4afda39709c2970/reviews
+//GET /tour/5c88fa8cf4afda39709c2970/reviews/1212jjhh4d9468fgh2
+ 
