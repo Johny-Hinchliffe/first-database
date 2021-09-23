@@ -54,4 +54,3 @@ module.exports = Review;
 //POST /tour/5c88fa8cf4afda39709c2970/reviews
 //GET /tour/5c88fa8cf4afda39709c2970/reviews
 //GET /tour/5c88fa8cf4afda39709c2970/reviews/1212jjhh4d9468fgh2
- 
