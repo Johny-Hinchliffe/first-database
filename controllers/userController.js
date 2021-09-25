@@ -11,24 +11,6 @@ const filterObj = (obj, ...allowedFields) => {
   console.log(newObj);
   return newObj;
 };
-exports.createUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
-
-exports.getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) create error if user POSTs password data
@@ -68,35 +50,14 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-/* 
-
-exports.updatePassword = catchAsync(async (req, res, next) => {
-  //1) Get the user from collection
-  const user = await User.findById(req.user.id).select('+password');
-
-  // 2) Check if password is correct
-  if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
-    return next(new AppError('Current password is incorrect', 401));
-  }
-
-  // 3) if so, update
-  user.password = req.body.password;
-  user.passwordConfirm = req.body.passwordConfirm;
-  await user.save();
-  // 4) log user in, send jwt
-  createSendToken(user, 200, res);
-});
-
-
-
-*/
-
-exports.getUser = (req, res) => {
+exports.createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'This route is not yet defined',
+    message: 'This route is not defined, use /signup instead',
   });
 };
+exports.getUser = factory.getOne(User);
+exports.getAllUsers = factory.getAll(User);
 
 // Do Not use update password with this as the save middleware is not run
 exports.updateUser = factory.updateOne(User);
