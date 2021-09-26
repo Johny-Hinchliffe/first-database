@@ -36,6 +36,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
+      set: (val) => Math.round(val * 10) / 10,
     },
     ratingsQuantity: {
       type: Number,
@@ -111,6 +112,11 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+// single field index
+// compound field index
+tourSchema.index({ ratingsAverage: -1, price: 1 });
+tourSchema.index({ slug: 1 });
 
 // Virtual Properties (add a new key value pair that isn't stored in the database to save download speeds)
 // can not use in a query as it isn't in the database
