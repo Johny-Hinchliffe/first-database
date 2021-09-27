@@ -4,3 +4,4 @@ errors
 -able to delete any review, even not one you wrote
 -able to sign up as admin
 -able to make multiple reviews on the same tour
+- fix aggregate in matching secret tours in tour model

@@ -117,7 +117,7 @@ const tourSchema = new mongoose.Schema(
 // compound field index
 tourSchema.index({ ratingsAverage: -1, price: 1 });
 tourSchema.index({ slug: 1 });
-
+tourSchema.index({ startLocation: '2dsphere' });
 // Virtual Properties (add a new key value pair that isn't stored in the database to save download speeds)
 // can not use in a query as it isn't in the database
 tourSchema.virtual('durationWeeks').get(function () {
@@ -176,8 +176,15 @@ tourSchema.pre(/^find/, function (next) {
 
 // AGGREGATION middleware allows to add hooks before or after agg happens
 tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
+  if (
+    !Object.values(this.pipeline()).some((el) =>
+      String(Object.keys(el) === '$geoNear')
+    )
+  ) {
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+    console.log(this.pipeline());
+  }
+
   next();
 });
 
