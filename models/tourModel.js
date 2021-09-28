@@ -139,26 +139,6 @@ tourSchema.pre('save', function (next) {
   next();
 });
 
-// tourSchema.pre('save', async function (next) {
-//   const guidesPromises = this.guides.map(async (id) => User.findById(id));
-//   this.guides = await Promise.all(guidesPromises);
-//   next();
-// });
-
-// tourSchema.pre('save', (next) => {
-//   console.log('Will save document...');
-//   next();
-// });
-
-// // POST Document middleware:
-// tourSchema.post('save', (doc, next) => {
-//   console.log(doc);
-//   next();
-// });
-
-// QUERY Middleware ('find') << hook
-// .pre() activates before any other middleware
-
 // 'this' will point at query not document
 tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });

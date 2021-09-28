@@ -39,7 +39,7 @@ exports.createOne = (Model) =>
       status: 'success',
       requestedAt: req.requestTime,
       data: {
-        date: doc,
+        data: doc,
       },
     });
   });

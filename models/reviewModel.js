@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const Tour = require('./tourModel');
+const User = require('./userModel');
+
+const AppError = require('../utilities/appError');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -33,7 +36,7 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 // DOUBLE CHECK MULTIPLE REIEWS
-reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+reviewSchema.index({ tour: -1, user: -1 }, { unique: true });
 
 reviewSchema.pre(/^find/, function (next) {
   //   this.populate({
@@ -77,7 +80,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
   }
 };
 
-reviewSchema.post('save', function () {
+reviewSchema.post(/^findOneAnd/, function () {
   this.constructor.calcAverageRatings(this.tour);
 });
 
@@ -90,6 +93,23 @@ reviewSchema.post(/^findOneAnd/, async function () {
   await this.rev.constructor.calcAverageRatings(this.rev.tour);
 });
 
-const Review = mongoose.model('Review', reviewSchema);
+reviewSchema.pre('save', async function (next) {
+  const doc = await Tour.findById(this.tour);
+  if (!doc) {
+    return next(new AppError('No document found with that ID', 404));
+  }
+});
 
+// reviewSchema.pre('save', async function (next) {
+//   const foundReview = await Review.find({
+//     tour: this.tour,
+//     user: this.user,
+//   });
+//
+//   if (foundReview === undefined || foundReview === null) {
+//     return next(new AppError('You can only post one review per tour', 500));
+//   }
+// });
+
+const Review = mongoose.model('Review', reviewSchema);
 module.exports = Review;

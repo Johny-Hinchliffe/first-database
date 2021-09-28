@@ -1,4 +1,5 @@
 // const fs = require('fs'); // put file system into variable
+const path = require('path');
 const express = require('express'); // put express into variable
 const morgan = require('morgan'); // HTTP request logger middleware for Node. js. It simplifies the process of logging requests to your application
 const rateLimit = require('express-rate-limit');
@@ -16,7 +17,13 @@ const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // 1) Global Middleware
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Set security HTTP headers
 app.use(helmet());
 
@@ -54,8 +61,6 @@ app.use(
     ],
   })
 );
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
 
 // Test Middleware
 app.use((req, res, next) => {
@@ -64,7 +69,10 @@ app.use((req, res, next) => {
   next();
 });
 
-//||\\ 2) Route Handlers
+//||\\ 2) Route Handler
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/reviews', reviewRouter);
